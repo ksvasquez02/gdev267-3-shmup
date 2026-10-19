@@ -15,6 +15,7 @@ public class Hero : MonoBehaviour
     public GameObject projectilePrefab;
     public float projectileSpeed = 40;
     public Weapon[] weapons;
+    public eWeaponType startingWeapon = eWeaponType.blaster;
 
     [Header("Dynamic")]
     [Range(0, 4)]
@@ -44,7 +45,7 @@ public class Hero : MonoBehaviour
 
         // Reset the weapons to start _Hero with 1 blaster
         ClearWeapons();
-        weapons[0].SetType(eWeaponType.blaster);
+        weapons[0].SetType(startingWeapon);
     }
 
     void Update()
@@ -55,8 +56,10 @@ public class Hero : MonoBehaviour
 
         // Change transform.position based on the axes
         Vector3 pos = transform.position;
-        pos.x += hAxis * speed * Time.deltaTime;
-        pos.y += vAxis * speed * Time.deltaTime;
+        Vector2 vel = new Vector2(hAxis, vAxis);
+        vel = Vector2.ClampMagnitude(vel, 1);
+        pos.x += vel.x * speed * Time.deltaTime;
+        pos.y += vel.y * speed * Time.deltaTime;
         transform.position = pos;
 
         // Rotate the ship to make it feel more dynamic                       // e

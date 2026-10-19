@@ -48,6 +48,10 @@ public class WeaponDefinition
     public float delayBetweenShots = 0;
     [Tooltip("Velocity of individual Projectiles")]
     public float velocity = 50;
+    [Tooltip("Amount of projectiles fired at once")]
+    public float projectileCount = 1;
+    [Tooltip("Total spread of projectiles")]
+    public float projectileSpread = 0;
 }
 
 public class Weapon : MonoBehaviour
@@ -125,19 +129,35 @@ public class Weapon : MonoBehaviour
         switch (type)
         {                                                      // k
             case eWeaponType.blaster:
-                p = MakeProjectile();
-                p.vel = vel;
+                float spreadOffset = -def.projectileSpread * 0.5f;
+                float offsetIncrement = def.projectileSpread / Mathf.Max(def.projectileCount - 1, 1);
+                for (int i = 0; i < def.projectileCount; i++)
+                {
+                    p = MakeProjectile();
+                    Vector3 pPos = p.transform.position;
+                    pPos.x += spreadOffset;
+                    p.transform.position = pPos;
+                    p.vel = vel;
+                    spreadOffset += offsetIncrement;
+                }
                 break;
 
             case eWeaponType.spread:                                         // l
+                float spreadAngle = -def.projectileSpread * 0.5f;
+                float angleIncrement = def.projectileSpread / Mathf.Max(def.projectileCount - 1, 1);
+                for (int i = 0; i < def.projectileCount; i++)
+                {
+                    p = MakeProjectile();
+                    p.transform.rotation = Quaternion.AngleAxis(spreadAngle, Vector3.back);
+                    p.vel = p.transform.rotation * vel;
+                    spreadAngle += angleIncrement;
+                }
+                break;
+
+
+            case eWeaponType.missile:                                         // l
                 p = MakeProjectile();
                 p.vel = vel;
-                p = MakeProjectile();
-                p.transform.rotation = Quaternion.AngleAxis(10, Vector3.back);
-                p.vel = p.transform.rotation * vel;
-                p = MakeProjectile();
-                p.transform.rotation = Quaternion.AngleAxis(-10, Vector3.back);
-                p.vel = p.transform.rotation * vel;
                 break;
 
         }
@@ -156,6 +176,15 @@ public class Weapon : MonoBehaviour
         p.type = type;
         nextShotTime = Time.time + def.delayBetweenShots;                    // p
         return (p);
+    }
+
+    private void OnDrawGizmos()
+    {
+        //if (def.type == eWeaponType.missile)
+        //{
+        //    Gizmos.color = Color.red;
+        //    Gizmos.d
+        //}
     }
 }
 

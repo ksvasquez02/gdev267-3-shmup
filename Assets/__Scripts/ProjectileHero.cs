@@ -6,7 +6,7 @@ using UnityEngine;
 public class ProjectileHero : MonoBehaviour
 {
     private BoundsCheck bndCheck;
-    private Renderer rend;
+    protected Renderer rend;
 
     [Header("Dynamic")]
     public Rigidbody rigid;
@@ -31,11 +31,16 @@ public class ProjectileHero : MonoBehaviour
 
     void Update()
     {
+        Move();
+
         if (bndCheck.LocIs(BoundsCheck.eScreenLocs.offUp))
         {
             Destroy(gameObject);
         }
     }
+
+    public virtual void Move()
+    { }
 
     /// <summary>
     /// Sets the _type private field and colors this projectile to match the 
@@ -54,8 +59,8 @@ public class ProjectileHero : MonoBehaviour
     /// </summary>
     public Vector3 vel
     {
-        get { return rigid.velocity; }
-        set { rigid.velocity = value; }
+        get { return rigid.linearVelocity; }
+        set { rigid.linearVelocity = value; }
     }
 
 }
