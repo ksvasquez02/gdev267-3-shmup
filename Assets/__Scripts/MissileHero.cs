@@ -7,8 +7,8 @@ public class MissileHero : ProjectileHero
 {
     [Header("Inscribed")]
     public float lockOnRadius = 1f;
-    public float maxLockOnDistance = 10;
-    public float minTurnSpeed = 0;
+    public Vector2 lockOnOffset = Vector3.zero;
+    public float baseTurnSpeed = 0;
     public float maxTurnSpeed = 60;
     public float turnAccel = 180;
     public float maxTurnRadius = 360;
@@ -24,9 +24,9 @@ public class MissileHero : ProjectileHero
 
     void Start()
     {
-        turnSpeed = minTurnSpeed;
+        turnSpeed = baseTurnSpeed;
         turnRadiusDeg = maxTurnRadius;
-        SetTarget(true);
+        SetTarget();
     }
 
     public override void Move()
@@ -44,27 +44,17 @@ public class MissileHero : ProjectileHero
         TrackTarget();
 
         turnRadiusDeg -= Mathf.Abs(Vector3.Angle(oldVel, vel));
-        if (turnRadiusDeg <= 0)
-        {
-            rend.material.color = Color.Lerp(rend.material.color, Color.white, 0.1f);
-        }
     }
 
-    public void SetTarget(bool freeAim = false)
+    public void SetTarget()
     {
         target = FindTarget();
 
         if (target == null) return;
 
-        //if (freeAim)
-        //{
-        //    float deg = maxTurnSpeed * 2f * Time.deltaTime;
-        //    TrackTarget(deg);
-        //}
-
         if (prevTargets > 0)
         {
-            turnSpeed = 0;
+            turnSpeed = baseTurnSpeed;
         }
         prevTargets++;
     }
@@ -76,31 +66,25 @@ public class MissileHero : ProjectileHero
 
     private GameObject FindTarget(GameObject source)
     {
-        Vector3 center = source.transform.position;
-        Vector3 direction = source.transform.TransformDirection(Vector3.up);
+        Vector3 position = source.transform.position;
+        Vector3 center = position + (Vector3)lockOnOffset;
 
         Collider[] enemiesAround = Physics.OverlapSphere(center, lockOnRadius, lockonLayerMask);
         if (enemiesAround.Length > 0)
         {
-            GameObject closest = enemiesAround[0].gameObject;
-            float closestDist = Vector3.SqrMagnitude(closest.transform.position - center);
+            GameObject closestEnemy = enemiesAround[0].gameObject;
+            float closestDist = Vector3.SqrMagnitude(closestEnemy.transform.position - position);
             foreach (Collider col in enemiesAround)
             {
                 GameObject enemy = col.gameObject;
-                float dist = Vector3.SqrMagnitude(enemy.transform.position - center);
+                float dist = Vector3.SqrMagnitude(enemy.transform.position - position);
                 if (dist < closestDist)
                 {
-                    closest = enemy;
+                    closestEnemy = enemy;
                     closestDist = dist;
                 }
             }
-            return closest;
-        }
-
-        bool enemyInFront = Physics.Raycast(center, direction, out RaycastHit hit, maxLockOnDistance, lockonLayerMask);
-        if (enemyInFront)
-        {
-            return hit.collider.gameObject;
+            return closestEnemy;
         }
 
         return null;
@@ -119,12 +103,6 @@ public class MissileHero : ProjectileHero
         Vector3 targetPos = target.transform.position;
         Vector3 toFace = targetPos - transform.position;
 
-        if (toFace.sqrMagnitude >= maxLockOnDistance * maxLockOnDistance)
-        {
-            target = null;
-            return;
-        }
-
         vel = Vector3.RotateTowards(vel, toFace, Mathf.Deg2Rad * degreesToTurn, 0.0f);
 
         float angle = Vector3.SignedAngle(Vector3.up, vel, Vector3.back);
@@ -137,12 +115,7 @@ public class MissileHero : ProjectileHero
         Gizmos.color = Color.red;
 
         float rad = lockOnRadius;
-        Vector3 _vel = Vector3.up;
-        if (rigid != null) _vel = vel;
-        Vector3 pos = transform.position;
-        Vector3 max = pos + _vel.normalized * maxLockOnDistance;
-
-        Gizmos.DrawWireSphere(pos, rad);
-        Gizmos.DrawLine(pos, max);
+        Vector3 cen = transform.position + (Vector3)lockOnOffset;
+        Gizmos.DrawWireSphere(cen, rad);
     }
 }

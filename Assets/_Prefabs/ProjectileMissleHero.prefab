@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -2393177835353120053}
   - component: {fileID: 2559217896821435417}
   m_Layer: 8
-  m_Name: MissleHero
+  m_Name: ProjectileMissleHero
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -170,12 +170,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rigid: {fileID: 0}
   _type: 0
-  lockOnRadius: 32
-  maxLockOnDistance: 48
+  lockOnRadius: 28
+  lockOnOffset: {x: 0, y: 5}
   minTurnSpeed: 180
-  maxTurnSpeed: 540
-  turnAccel: 180
-  maxTurnRadius: 270
+  maxTurnSpeed: 1080
+  turnAccel: 540
+  maxTurnRadius: 360
   lockonLayerMask:
     serializedVersion: 2
     m_Bits: 128
