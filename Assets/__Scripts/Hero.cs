@@ -32,7 +32,7 @@ public class Hero : MonoBehaviour
     public delegate void WeaponFireDelegate();                                // a     // Create a WeaponFireDelegate event named fireEvent.
     public event WeaponFireDelegate fireEvent;
 
-
+    public Weapon MainWeapon {  get { return weapons[0]; } }
 
     void Awake()
     {
@@ -48,7 +48,8 @@ public class Hero : MonoBehaviour
 
         // Reset the weapons to start _Hero with 1 blaster
         ClearWeapons();
-        weapons[0].SetType(startingWeapon);
+        MainWeapon.SetType(startingWeapon);
+        MainWeapon.isMainWeapon = true;
     }
 
     void Update()
@@ -175,14 +176,13 @@ public class Hero : MonoBehaviour
 
     void CoordinateWeapons(float time)
     {
-        Weapon main = weapons[0];
-        main.SetDelayedShotTime(time);
+        MainWeapon.SetDelayedShotTime(time);
 
         for (int i = 1; i < weapons.Length; i++)
         {
             Weapon w = weapons[i];
             if (w.type == eWeaponType.none) continue;
-            w.SetDelayedShotTime(main.nextShotTime);
+            w.SetDelayedShotTime(MainWeapon.nextShotTime);
         }
     }
     void CoordinateWeapons()
@@ -200,21 +200,21 @@ public class Hero : MonoBehaviour
                 break;
 
             default:                                                             // b
-                if (pUp.type == weapons[0].type)
+                if (pUp.type == MainWeapon.type)
                 { // If it is the same type     // c
                     Weapon weap = GetEmptyWeaponSlot();
                     if (weap != null)
                     {
                         // Set it to pUp.type
                         weap.SetType(pUp.type);
-                        CoordinateWeapons(weapons[0].nextShotTime);
+                        CoordinateWeapons(MainWeapon.nextShotTime);
                     }
                 }
                 else
                 { // If this is a different weapon type                   // d
                     ClearWeapons();
-                    weapons[0].SetType(pUp.type);
-                    weapons[0].nextShotTime = 0;
+                    MainWeapon.SetType(pUp.type);
+                    MainWeapon.nextShotTime = 0;
                 }
                 break;
 

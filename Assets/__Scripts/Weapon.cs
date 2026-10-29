@@ -56,9 +56,6 @@ public class WeaponDefinition
     [Tooltip("Seconds to delay between Weapons of different orders")]
     public float fireOrderDelay = 0;
 
-    public float SpreadSpaces { get { return Mathf.Max(projectileCount - 1, 1); } }
-    public float FirstSpread { get { return -projectileSpread * 0.5f; } }
-    public float SpreadIncrement { get { return projectileSpread / SpreadSpaces; } }
 }
 
 public class Weapon : MonoBehaviour
@@ -68,9 +65,7 @@ public class Weapon : MonoBehaviour
     [Header("Inscribed")]
     [SerializeField]
     private float rotYaw = 0;
-    //[SerializeField][Min(0)]
-    //private float weapDelay = 0;
-    [SerializeField][Min(0)]
+    [SerializeField]
     private int weaponOrder = 0;
 
     [Header("Dynamic")]                                                        // a
@@ -79,6 +74,7 @@ public class Weapon : MonoBehaviour
     private eWeaponType _type = eWeaponType.none;
     public WeaponDefinition def;
     public float nextShotTime = 0; // Time the Weapon will fire next
+    public bool isMainWeapon = false;
 
     private GameObject weaponModel;
     private Transform shotPointTrans;
@@ -139,7 +135,10 @@ public class Weapon : MonoBehaviour
         float oldNextShotTime = nextShotTime;
         float delayedShotTime = time + WeaponDelay;
 
-        while (oldNextShotTime - delayedShotTime > WeaponDelay)
+        if (oldNextShotTime > delayedShotTime + def.delayBetweenShots)
+            Debug.Log($"Weapon ${transform.parent.name} early ({oldNextShotTime:F4} > {delayedShotTime:F4} + {def.delayBetweenShots:F2})");
+
+        while (oldNextShotTime > delayedShotTime + def.delayBetweenShots)
         {
             delayedShotTime += def.delayBetweenShots;
         }
@@ -156,40 +155,44 @@ public class Weapon : MonoBehaviour
         ProjectileHero p;
         Vector3 vel = Vector3.up * def.velocity;
 
-        float spread = def.FirstSpread;
-        float spreadIncrement = def.SpreadIncrement;
+        float projCount = def.projectileCount + (isMainWeapon ? 1 : 0);
+        float spreadOffset = (projCount > 1) ? -def.projectileSpread * 0.5f : 0;
+        float spreadIncrement = def.projectileSpread / Mathf.Max(projCount - 1, 1);
 
         switch (type)
         {                                                      // k
             case eWeaponType.blaster:
-                for (int i = 0; i < def.projectileCount; i++)
+                for (int i = 0; i < projCount; i++)
                 {
-                    p = FireProjStraight(vel, spread);
-                    spread += spreadIncrement;
+                    p = FireProjStraight(vel, spreadOffset);
+                    spreadOffset += spreadIncrement;
                 }
                 break;
 
             case eWeaponType.spread:                                         // l
-                for (int i = 0; i < def.projectileCount; i++)
+                for (int i = 0; i < projCount; i++)
                 {
-                    p = FireProjAngled(vel, spread + rotYaw);
-                    spread += spreadIncrement;
+                    p = FireProjAngled(vel, spreadOffset + rotYaw);
+                    spreadOffset += spreadIncrement;
                 }
                 break;
 
             case eWeaponType.missile:
-                p = FireProjAngled(vel, rotYaw);
+                for (int i = 0; i < projCount; i++)
+                {
+                    p = FireProjAngled(vel, rotYaw);
+                }
                 break;
 
             case eWeaponType.phaser:
-                for (int i = 0; i < def.projectileCount; i++)
+                for (int i = 0; i < projCount; i++)
                 {
-                    p = FireProjStraight(vel, spread);
+                    p = FireProjStraight(vel, spreadOffset);
                     if ((i % 2 != 0) && (p is ProjPhaserHero phaser))
                     {
                         phaser.waveWidth = -phaser.waveWidth;
                     }
-                    spread += spreadIncrement;
+                    spreadOffset += spreadIncrement;
                 }
                 break;
 
@@ -205,6 +208,7 @@ public class Weapon : MonoBehaviour
         p.vel = vel;
         return p;
     }
+
     private ProjectileHero FireProjAngled(Vector3 vel, float angle = 0)
     {
         ProjectileHero p = MakeProjectile();

@@ -119,9 +119,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   fireRate: 0.3
-  health: 5
+  health: 10
   score: 100
-  powerUpDropChance: 1
+  powerUpDropChance: 0.75
   lifeTime: 10
   sinEccentricity: 0.6
   rotCurve:

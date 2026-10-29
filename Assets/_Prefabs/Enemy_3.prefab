@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boundsType: 2
-  radius: 2.5
+  radius: 3
   keepOnScreen: 0
   screenLocs: 0
   camWidth: 0
@@ -119,7 +119,7 @@ MonoBehaviour:
   fireRate: 0.3
   health: 5
   score: 100
-  powerUpDropChance: 1
+  powerUpDropChance: 0.75
   lifeTime: 5
   midpointYRange: {x: 1.5, y: 3}
   drawDebugInfo: 1
