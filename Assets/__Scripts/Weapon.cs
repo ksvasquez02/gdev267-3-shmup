@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 /// <summary
@@ -52,21 +53,37 @@ public class WeaponDefinition
     public float projectileCount = 1;
     [Tooltip("Total spread of projectiles")]
     public float projectileSpread = 0;
+    [Tooltip("Seconds to delay between Weapons of different orders")]
+    public float fireOrderDelay = 0;
+
+    public float SpreadSpaces { get { return Mathf.Max(projectileCount - 1, 1); } }
+    public float FirstSpread { get { return -projectileSpread * 0.5f; } }
+    public float SpreadIncrement { get { return projectileSpread / SpreadSpaces; } }
 }
 
 public class Weapon : MonoBehaviour
 {
     static public Transform PROJECTILE_ANCHOR;
 
+    [Header("Inscribed")]
+    [SerializeField]
+    private float rotYaw = 0;
+    //[SerializeField][Min(0)]
+    //private float weapDelay = 0;
+    [SerializeField][Min(0)]
+    private int weaponOrder = 0;
+
     [Header("Dynamic")]                                                        // a
     [SerializeField]                                                           // a
     [Tooltip("Setting this manually while playing does not work properly.")]   // a
     private eWeaponType _type = eWeaponType.none;
     public WeaponDefinition def;
-    public float nextShotTime; // Time the Weapon will fire next
+    public float nextShotTime = 0; // Time the Weapon will fire next
 
     private GameObject weaponModel;
     private Transform shotPointTrans;
+
+    public float WeaponDelay { get { return weaponOrder * def.fireOrderDelay; } }
 
     void Start()
     {
@@ -99,6 +116,7 @@ public class Weapon : MonoBehaviour
         if (type == eWeaponType.none)
         {                                       // f
             this.gameObject.SetActive(false);
+            nextShotTime = 0;
             return;
         }
         else
@@ -113,7 +131,19 @@ public class Weapon : MonoBehaviour
         weaponModel.transform.localPosition = Vector3.zero;
         weaponModel.transform.localScale = Vector3.one;
 
-        nextShotTime = 0; // You can fire immediately after _type is set.    // h
+        //nextShotTime = 0; // You can fire immediately after _type is set.    // h
+    }
+
+    public void SetDelayedShotTime(float time)
+    {
+        float oldNextShotTime = nextShotTime;
+        float delayedShotTime = time + WeaponDelay;
+
+        while (oldNextShotTime - delayedShotTime > WeaponDelay)
+        {
+            delayedShotTime += def.delayBetweenShots;
+        }
+        nextShotTime = delayedShotTime;
     }
 
     private void Fire()
@@ -126,41 +156,61 @@ public class Weapon : MonoBehaviour
         ProjectileHero p;
         Vector3 vel = Vector3.up * def.velocity;
 
+        float spread = def.FirstSpread;
+        float spreadIncrement = def.SpreadIncrement;
+
         switch (type)
         {                                                      // k
             case eWeaponType.blaster:
-                float spreadOffset = -def.projectileSpread * 0.5f;
-                float offsetIncrement = def.projectileSpread / Mathf.Max(def.projectileCount - 1, 1);
                 for (int i = 0; i < def.projectileCount; i++)
                 {
-                    p = MakeProjectile();
-                    Vector3 pPos = p.transform.position;
-                    pPos.x += spreadOffset;
-                    p.transform.position = pPos;
-                    p.vel = vel;
-                    spreadOffset += offsetIncrement;
+                    p = FireProjStraight(vel, spread);
+                    spread += spreadIncrement;
                 }
                 break;
 
             case eWeaponType.spread:                                         // l
-                float spreadAngle = -def.projectileSpread * 0.5f;
-                float angleIncrement = def.projectileSpread / Mathf.Max(def.projectileCount - 1, 1);
                 for (int i = 0; i < def.projectileCount; i++)
                 {
-                    p = MakeProjectile();
-                    p.transform.rotation = Quaternion.AngleAxis(spreadAngle, Vector3.back);
-                    p.vel = p.transform.rotation * vel;
-                    spreadAngle += angleIncrement;
+                    p = FireProjAngled(vel, spread + rotYaw);
+                    spread += spreadIncrement;
                 }
                 break;
 
+            case eWeaponType.missile:
+                p = FireProjAngled(vel, rotYaw);
+                break;
 
-            case eWeaponType.missile:                                         // l
-                p = MakeProjectile();
-                p.vel = vel;
+            case eWeaponType.phaser:
+                for (int i = 0; i < def.projectileCount; i++)
+                {
+                    p = FireProjStraight(vel, spread);
+                    if ((i % 2 != 0) && (p is ProjPhaserHero phaser))
+                    {
+                        phaser.waveWidth = -phaser.waveWidth;
+                    }
+                    spread += spreadIncrement;
+                }
                 break;
 
         }
+    }
+
+    private ProjectileHero FireProjStraight(Vector3 vel, float offset = 0)
+    {
+        ProjectileHero p = MakeProjectile();
+        Vector3 pPos = p.transform.position;
+        pPos.x += offset;
+        p.transform.position = pPos;
+        p.vel = vel;
+        return p;
+    }
+    private ProjectileHero FireProjAngled(Vector3 vel, float angle = 0)
+    {
+        ProjectileHero p = MakeProjectile();
+        p.transform.rotation = Quaternion.AngleAxis(angle, Vector3.back);
+        p.vel = p.transform.rotation * vel;
+        return p;
     }
 
     private ProjectileHero MakeProjectile()
@@ -178,13 +228,13 @@ public class Weapon : MonoBehaviour
         return (p);
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
-        //if (def.type == eWeaponType.missile)
-        //{
-        //    Gizmos.color = Color.red;
-        //    Gizmos.d
-        //}
+        Gizmos.color = Color.red;
+
+        Vector3 dir = Quaternion.AngleAxis(rotYaw, Vector3.back) * Vector3.up;
+        Vector3 to = transform.position + dir;
+        Gizmos.DrawLine(transform.position, to);
     }
 }
 

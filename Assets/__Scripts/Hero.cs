@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Hero : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class Hero : MonoBehaviour
 
     [Tooltip("This field holds a reference to the last triggering GameObject")]
     private GameObject lastTriggerGo = null;
+
+    private bool wasFiringLastFrame = false;
 
     // Declare a new delegate type WeaponFireDelegate
     public delegate void WeaponFireDelegate();                                // a     // Create a WeaponFireDelegate event named fireEvent.
@@ -74,7 +77,13 @@ public class Hero : MonoBehaviour
         // Use the fireEvent to fire Weapons when the Spacebar is pressed.
         if (Input.GetAxis("Jump") == 1 && fireEvent != null)
         {
+            if (!wasFiringLastFrame) CoordinateWeapons();
             fireEvent();
+            wasFiringLastFrame = true;
+        }
+        else
+        {
+            wasFiringLastFrame = false;
         }
 
     }
@@ -164,6 +173,23 @@ public class Hero : MonoBehaviour
         }
     }
 
+    void CoordinateWeapons(float time)
+    {
+        Weapon main = weapons[0];
+        main.SetDelayedShotTime(time);
+
+        for (int i = 1; i < weapons.Length; i++)
+        {
+            Weapon w = weapons[i];
+            if (w.type == eWeaponType.none) continue;
+            w.SetDelayedShotTime(main.nextShotTime);
+        }
+    }
+    void CoordinateWeapons()
+    {
+        CoordinateWeapons(Time.time);
+    }
+
     public void AbsorbPowerUp(PowerUp pUp)
     {
         Debug.Log("Absorbed PowerUp: " + pUp.type);                         // b
@@ -181,12 +207,14 @@ public class Hero : MonoBehaviour
                     {
                         // Set it to pUp.type
                         weap.SetType(pUp.type);
+                        CoordinateWeapons(weapons[0].nextShotTime);
                     }
                 }
                 else
                 { // If this is a different weapon type                   // d
                     ClearWeapons();
                     weapons[0].SetType(pUp.type);
+                    weapons[0].nextShotTime = 0;
                 }
                 break;
 

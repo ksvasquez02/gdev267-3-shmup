@@ -1,9 +1,8 @@
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static Unity.VisualScripting.Member;
 
-public class MissileHero : ProjectileHero
+public class ProjMissileHero : ProjectileHero
 {
     [Header("Inscribed")]
     public float lockOnRadius = 1f;
@@ -11,7 +10,7 @@ public class MissileHero : ProjectileHero
     public float baseTurnSpeed = 0;
     public float maxTurnSpeed = 60;
     public float turnAccel = 180;
-    public float maxTurnRadius = 360;
+    public float maxTurnDeg = 360;
     public LayerMask lockonLayerMask;
 
     [Header("Dynamic")]
@@ -20,18 +19,18 @@ public class MissileHero : ProjectileHero
     [SerializeField]
     private float turnSpeed = 0;
     [SerializeField]
-    private float turnRadiusDeg = 0;
+    private float remainingTurnDeg = 0;
 
     void Start()
     {
         turnSpeed = baseTurnSpeed;
-        turnRadiusDeg = maxTurnRadius;
+        remainingTurnDeg = maxTurnDeg;
         SetTarget();
     }
 
     public override void Move()
     {
-        if (turnRadiusDeg <= 0) return;
+        if (remainingTurnDeg <= 0) return;
 
         if (target == null)
         {
@@ -40,10 +39,8 @@ public class MissileHero : ProjectileHero
         }
 
         Vector3 oldVel = vel;
-
         TrackTarget();
-
-        turnRadiusDeg -= Mathf.Abs(Vector3.Angle(oldVel, vel));
+        remainingTurnDeg -= Mathf.Abs(Vector3.Angle(oldVel, vel));
     }
 
     public void SetTarget()
@@ -66,18 +63,20 @@ public class MissileHero : ProjectileHero
 
     private GameObject FindTarget(GameObject source)
     {
-        Vector3 position = source.transform.position;
-        Vector3 center = position + (Vector3)lockOnOffset;
+        Vector3 pos = source.transform.position;
+        Vector3 center = pos + (Vector3)lockOnOffset;
 
-        Collider[] enemiesAround = Physics.OverlapSphere(center, lockOnRadius, lockonLayerMask);
-        if (enemiesAround.Length > 0)
+        // Find all enemies within lockOnRadius of missile
+        Collider[] targets = Physics.OverlapSphere(center, lockOnRadius, lockonLayerMask);
+        if (targets.Length > 0)
         {
-            GameObject closestEnemy = enemiesAround[0].gameObject;
-            float closestDist = Vector3.SqrMagnitude(closestEnemy.transform.position - position);
-            foreach (Collider col in enemiesAround)
+            // Compare the distances of each target to find the closest
+            GameObject closestEnemy = targets[0].gameObject;
+            float closestDist = Vector3.SqrMagnitude(closestEnemy.transform.position - pos);
+            foreach (Collider col in targets)
             {
                 GameObject enemy = col.gameObject;
-                float dist = Vector3.SqrMagnitude(enemy.transform.position - position);
+                float dist = Vector3.SqrMagnitude(enemy.transform.position - pos);
                 if (dist < closestDist)
                 {
                     closestEnemy = enemy;
@@ -92,13 +91,11 @@ public class MissileHero : ProjectileHero
 
     private void TrackTarget()
     {
-        turnSpeed = Mathf.Min(turnSpeed + turnAccel * Time.deltaTime, maxTurnSpeed);
-        float degreesToTurn = turnSpeed * Time.deltaTime;
-
-        TrackTarget(degreesToTurn);
+        turnSpeed = Mathf.Min(turnSpeed + turnAccel * Time.fixedDeltaTime, maxTurnSpeed);
+        Turn(turnSpeed * Time.fixedDeltaTime);
     }
 
-    private void TrackTarget(float degreesToTurn)
+    private void Turn(float degreesToTurn)
     {
         Vector3 targetPos = target.transform.position;
         Vector3 toFace = targetPos - transform.position;

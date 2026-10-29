@@ -29,7 +29,7 @@ public class ProjectileHero : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         Move();
 

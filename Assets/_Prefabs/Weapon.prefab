@@ -57,6 +57,8 @@ MonoBehaviour:
     damagePerSec: 0
     delayBetweenShots: 0
     velocity: 50
+    projectileCount: 1
+    projectileSpread: 0
   nextShotTime: 0
 --- !u!1 &5153081989183711193
 GameObject:
