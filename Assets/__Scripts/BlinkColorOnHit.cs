@@ -35,8 +35,23 @@ public class BlinkColorOnHit : MonoBehaviour
         if (showingColor && Time.time > blinkCompleteTime) RevertColors(); // e
     }
 
-    void OnCollisionEnter(Collision coll)
+    void OnTriggerEnter(Collider coll)
     {
+        // Check for collisions with ProjectileHero
+        ProjectileHero p = coll.gameObject.GetComponent<ProjectileHero>();
+        if (p != null)
+        {                                                  // f
+            if (bndCheck != null && !bndCheck.isOnScreen)
+            {               // g
+                return; // Don’t show damage if this is off screen
+            }
+            SetColors();
+        }
+    }
+    void OnTriggerStay(Collider coll)
+    {
+        //if (showingColor && Time.time <= blinkCompleteTime) return;
+
         // Check for collisions with ProjectileHero
         ProjectileHero p = coll.gameObject.GetComponent<ProjectileHero>();
         if (p != null)

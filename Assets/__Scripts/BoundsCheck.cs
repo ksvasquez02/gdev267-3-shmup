@@ -99,5 +99,24 @@ public class BoundsCheck : MonoBehaviour
         return ((screenLocs & checkLoc) == checkLoc);                     
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        if (Camera.main == null) return;
 
+        float rad = 0;
+        if (boundsType == eType.inset) rad = -radius;
+        if (boundsType == eType.outset) rad = radius;
+
+        float cH = (Camera.main.orthographicSize) + rad;
+        float cW = (cH * Camera.main.aspect) + rad;
+
+        Bounds bounds = new()
+        {
+            min = new Vector3(-cW, -cH, 0),
+            max = new Vector3(cW, cH, 0)
+        };
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireCube(bounds.center, bounds.size);
+    }
 }

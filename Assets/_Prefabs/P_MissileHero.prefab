@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 5011982356724754846}
   - component: {fileID: 8215859263095270135}
   - component: {fileID: 5892080703320810961}
-  - component: {fileID: 1921631295175012299}
   - component: {fileID: -2393177835353120053}
+  - component: {fileID: 2559217896821435417}
   m_Layer: 8
-  m_Name: ProjPhaserHero
+  m_Name: P_MissileHero
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 10, z: 0}
-  m_LocalScale: {x: 0.25, y: 1.25, z: 0.5}
+  m_LocalScale: {x: 0.5, y: 1.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -105,7 +105,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -138,22 +138,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 0
---- !u!114 &1921631295175012299
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8884485313326729009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e72d022b4d5f63b40a0994d55a63ea6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rigid: {fileID: 0}
-  _type: 0
-  waveFrequency: 0.85
-  waveWidth: 8
 --- !u!114 &-2393177835353120053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,8 +151,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boundsType: 2
-  radius: 1
+  radius: 1.5
   keepOnScreen: 0
   screenLocs: 0
   camWidth: 0
   camHeight: 0
+--- !u!114 &2559217896821435417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8884485313326729009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 191f61b986e3cf14e844f43f065ba307, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rigid: {fileID: 0}
+  _type: 0
+  lockOnRadius: 28
+  lockOnOffset: {x: 0, y: 5}
+  baseTurnSpeed: 0
+  maxTurnSpeed: 1080
+  turnAccel: 540
+  maxTurnDeg: 360
+  lockonLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  target: {fileID: 0}
+  turnSpeed: 0
+  remainingTurnDeg: 0

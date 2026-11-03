@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -18,6 +19,7 @@ public enum eWeaponType
     missile,    // [NI] Homing missiles
 
     laser,      // [NI] Damage over time
+    beam,      // [NI] Damage over time
     shield      // Raise shieldLevel
 }
 
@@ -55,6 +57,8 @@ public class WeaponDefinition
     public float projectileSpread = 0;
     [Tooltip("Seconds to delay between Weapons of different orders")]
     public float fireOrderDelay = 0;
+    [Tooltip("Extra bullets to fire as Main Weapon")]
+    public float mainWeaponBonus = 1;
 
 }
 
@@ -130,6 +134,14 @@ public class Weapon : MonoBehaviour
         //nextShotTime = 0; // You can fire immediately after _type is set.    // h
     }
 
+    public bool SetLeadShotTime(float time)
+    {
+        float oldNextShotTime = nextShotTime;
+        float delayedShotTime = time + WeaponDelay;
+        nextShotTime = Mathf.Max(delayedShotTime, oldNextShotTime);
+        return delayedShotTime > oldNextShotTime;
+    }
+
     public void SetDelayedShotTime(float time)
     {
         float oldNextShotTime = nextShotTime;
@@ -155,47 +167,53 @@ public class Weapon : MonoBehaviour
         ProjectileHero p;
         Vector3 vel = Vector3.up * def.velocity;
 
-        float projCount = def.projectileCount + (isMainWeapon ? 1 : 0);
+        float projCount = def.projectileCount + (isMainWeapon ? def.mainWeaponBonus : 0);
         float spreadOffset = (projCount > 1) ? -def.projectileSpread * 0.5f : 0;
         float spreadIncrement = def.projectileSpread / Mathf.Max(projCount - 1, 1);
 
-        switch (type)
-        {                                                      // k
-            case eWeaponType.blaster:
-                for (int i = 0; i < projCount; i++)
-                {
+        for (int i = 0; i < projCount; i++)
+        {
+            switch (type)
+            {                                                      // k
+                case eWeaponType.blaster:
                     p = FireProjStraight(vel, spreadOffset);
-                    spreadOffset += spreadIncrement;
-                }
-                break;
+                    break;
 
-            case eWeaponType.spread:                                         // l
-                for (int i = 0; i < projCount; i++)
-                {
+                case eWeaponType.spread:                                         // l
                     p = FireProjAngled(vel, spreadOffset + rotYaw);
-                    spreadOffset += spreadIncrement;
-                }
-                break;
+                    break;
 
-            case eWeaponType.missile:
-                for (int i = 0; i < projCount; i++)
-                {
-                    p = FireProjAngled(vel, rotYaw);
-                }
-                break;
+                case eWeaponType.missile:
+                    p = FireProjAngled(vel, spreadOffset + rotYaw);
+                    break;
 
-            case eWeaponType.phaser:
-                for (int i = 0; i < projCount; i++)
-                {
+                case eWeaponType.phaser:
                     p = FireProjStraight(vel, spreadOffset);
-                    if ((i % 2 != 0) && (p is ProjPhaserHero phaser))
+                    if (p is ProjPhaserHero phaser)
                     {
-                        phaser.waveWidth = -phaser.waveWidth;
+                        if (rotYaw < 0) phaser.waveWidth *= -1;
+                        if (i % 2 != 0) phaser.waveWidth *= -1;
                     }
-                    spreadOffset += spreadIncrement;
-                }
-                break;
+                    break;
 
+                case eWeaponType.laser:
+                    p = FireProjStraight(vel, spreadOffset);
+                    float angle = rotYaw * 0.5f;
+                    p.transform.rotation = Quaternion.AngleAxis(angle, Vector3.back);
+                    p.vel = p.transform.rotation * p.vel;
+                    break;
+
+                case eWeaponType.beam:
+                    p = FireProjStraight(vel, spreadOffset);
+                    if (p is ProjBeamHero beam)
+                    {
+                        p.vel = Vector3.zero;
+                        Vector3 offset = new(spreadOffset, 0, 0);
+                        beam.SetParent(shotPointTrans, offset);
+                    }
+                    break;
+            }
+            spreadOffset += spreadIncrement;
         }
     }
 

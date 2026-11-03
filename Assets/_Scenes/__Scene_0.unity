@@ -695,7 +695,7 @@ MonoBehaviour:
   - {fileID: 2103876059}
   - {fileID: 980067140}
   - {fileID: 781726980}
-  startingWeapon: 2
+  startingWeapon: 6
   _shieldLevel: 1
 --- !u!114 &930863984
 MonoBehaviour:
@@ -856,8 +856,9 @@ MonoBehaviour:
     delayBetweenShots: 0.2
     velocity: 80
     projectileCount: 1
-    projectileSpread: 0.5
+    projectileSpread: 0.25
     fireOrderDelay: 0.05
+    mainWeaponBonus: 1
   - type: 2
     letter: S
     powerUpColor: {r: 0.18623178, g: 0.8773585, b: 0.8561891, a: 1}
@@ -871,7 +872,8 @@ MonoBehaviour:
     projectileCount: 3
     projectileSpread: 35
     fireOrderDelay: 0.13333
-  - type: 6
+    mainWeaponBonus: 1
+  - type: 7
     letter: O
     powerUpColor: {r: 0, g: 1, b: 0, a: 1}
     weaponModelPrefab: {fileID: 0}
@@ -884,6 +886,7 @@ MonoBehaviour:
     projectileCount: 1
     projectileSpread: 0
     fireOrderDelay: 0
+    mainWeaponBonus: 1
   - type: 4
     letter: M
     powerUpColor: {r: 1, g: 0, b: 0, a: 1}
@@ -895,22 +898,52 @@ MonoBehaviour:
     delayBetweenShots: 0.8
     velocity: 40
     projectileCount: 1
-    projectileSpread: 20
+    projectileSpread: 5
     fireOrderDelay: 0.1
+    mainWeaponBonus: 1
   - type: 3
     letter: P
     powerUpColor: {r: 1, g: 0.07843138, b: 0.5764706, a: 1}
     weaponModelPrefab: {fileID: 919132149155446097, guid: 2b917555367b8f64fab39ba6974870f3, type: 3}
     projectilePrefab: {fileID: 8884485313326729009, guid: 2bd39c595fd623f439959e291f69ac6f, type: 3}
     projectileColor: {r: 1, g: 0.078431375, b: 0.5764706, a: 1}
-    damageOnHit: 1
+    damageOnHit: 2
     damagePerSec: 0
     delayBetweenShots: 0.3
     velocity: 60
-    projectileCount: 2
+    projectileCount: 1
     projectileSpread: 1
     fireOrderDelay: 0.1
-  powerUpFrequency: 0100000002000000030000000400000006000000
+    mainWeaponBonus: 1
+  - type: 5
+    letter: L
+    powerUpColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    weaponModelPrefab: {fileID: 919132149155446097, guid: 2b917555367b8f64fab39ba6974870f3, type: 3}
+    projectilePrefab: {fileID: 8884485313326729009, guid: 4e8f45a0f7965c74d9e3ebfd6ca6dffd, type: 3}
+    projectileColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    damageOnHit: 0
+    damagePerSec: 5
+    delayBetweenShots: 1
+    velocity: 60
+    projectileCount: 1
+    projectileSpread: 1
+    fireOrderDelay: 0
+    mainWeaponBonus: 1
+  - type: 6
+    letter: E
+    powerUpColor: {r: 0.6, g: 0.1960784, b: 0.8000001, a: 1}
+    weaponModelPrefab: {fileID: 919132149155446097, guid: 0522e2d6add5631469273543744ebf7f, type: 3}
+    projectilePrefab: {fileID: 8884485313326729009, guid: e5dba636bfc5bca44b6725b0855de7bb, type: 3}
+    projectileColor: {r: 0.6, g: 0.1960784, b: 0.8000001, a: 1}
+    damageOnHit: 0
+    damagePerSec: 3
+    delayBetweenShots: 1
+    velocity: 0
+    projectileCount: 1
+    projectileSpread: 0.75
+    fireOrderDelay: 0
+    mainWeaponBonus: 1
+  powerUpFrequency: 01000000020000000300000004000000050000000600000007000000
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -945,8 +978,8 @@ MonoBehaviour:
   panels:
   - {fileID: 1162912873}
   - {fileID: 1615314293}
-  scrollSpeed: -20
-  motionMulti: {x: 0.25, y: 0.01}
+  scrollSpeed: -10
+  motionMulti: {x: 0.05, y: 0}
 --- !u!1001 &980067138
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1115,12 +1148,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1162912869}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 5}
   m_LocalScale: {x: 160, y: 160, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1276947054}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1271150633
 GameObject:
@@ -1201,11 +1234,45 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1271150633}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 10}
   m_LocalScale: {x: 80, y: 80, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
+  m_Father: {fileID: 1276947054}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1276947053
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1276947054}
+  m_Layer: 0
+  m_Name: BG
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1276947054
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1276947053}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1271150637}
+  - {fileID: 1162912873}
+  - {fileID: 1615314293}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1583695806
@@ -1410,12 +1477,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1615314289}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 5}
   m_LocalScale: {x: 160, y: 160, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1276947054}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1725476488 stripped
 Transform:
@@ -1601,6 +1668,4 @@ SceneRoots:
   - {fileID: 963194228}
   - {fileID: 930863981}
   - {fileID: 705507995}
-  - {fileID: 1271150637}
-  - {fileID: 1162912873}
-  - {fileID: 1615314293}
+  - {fileID: 1276947054}

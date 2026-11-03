@@ -25,8 +25,8 @@ public class ProjectileHero : MonoBehaviour
     void Awake()
     {
         bndCheck = GetComponent<BoundsCheck>();
-        rend = GetComponent<Renderer>();                                     // d
-        rigid = GetComponent<Rigidbody>();
+        rend = GetComponentInChildren<Renderer>();                                     // d
+        rigid = GetComponentInChildren<Rigidbody>();
     }
 
     void FixedUpdate()
@@ -41,6 +41,24 @@ public class ProjectileHero : MonoBehaviour
 
     public virtual void Move()
     { }
+
+    public virtual float DamageHit()
+    {
+        WeaponDefinition def = Main.GET_WEAPON_DEFINITION(_type);
+        float damage = def.damageOnHit;
+        if (def.damagePerSec <= 0)
+        {
+            Destroy(gameObject);
+        }
+        return damage;
+    }
+
+    public virtual float DamageStay()
+    {
+        float damage = Main.GET_WEAPON_DEFINITION(type).damagePerSec;
+        float damageTick = damage * Time.fixedDeltaTime;
+        return damageTick;
+    }
 
     /// <summary>
     /// Sets the _type private field and colors this projectile to match the 

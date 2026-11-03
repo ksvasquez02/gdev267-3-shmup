@@ -176,7 +176,7 @@ public class Hero : MonoBehaviour
 
     void CoordinateWeapons(float time)
     {
-        MainWeapon.SetDelayedShotTime(time);
+        MainWeapon.SetLeadShotTime(time);
 
         for (int i = 1; i < weapons.Length; i++)
         {

@@ -57,32 +57,61 @@ public class Enemy : MonoBehaviour
         pos = tempPos;
     }
 
-    void OnCollisionEnter(Collision coll)
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            if (!calledShipDestroyed)
+            {
+                calledShipDestroyed = true;
+                Main.SHIP_DESTROYED(this);
+            }
+            // Destroy this Enemy
+            Destroy(this.gameObject);
+        }
+    }
+
+    public void HandleProjectileHit(GameObject go, float damage)
+    {
+        // Only damage this Enemy if it’s on screen
+        if (bndCheck.isOnScreen)
+        {
+            // Get the damage amount from the Main WEAP_DICT.
+            TakeDamage(damage);
+        }
+        // Destroy the ProjectileHero otherwise
+        else
+        {
+            Destroy(go);                                               // e
+        }
+    }
+
+    void OnTriggerEnter(Collider coll)
     {
         GameObject otherGO = coll.gameObject;
 
         // Check for collisions with ProjectileHero
         ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
         if (p != null)
-        {                                                  
-            // Only damage this Enemy if it’s on screen
-            if (bndCheck.isOnScreen)
-            {                                      
-                // Get the damage amount from the Main WEAP_DICT.
-                health -= Main.GET_WEAPON_DEFINITION(p.type).damageOnHit;
-                if (health <= 0)
-                {
-                    if (!calledShipDestroyed)
-                    {
-                        calledShipDestroyed = true;
-                        Main.SHIP_DESTROYED(this);
-                    }
-                    // Destroy this Enemy
-                    Destroy(this.gameObject);
-                }
-            }
-            // Destroy the ProjectileHero regardless
-            Destroy(otherGO);                                               // e
+        {
+            HandleProjectileHit(otherGO, p.DamageHit());
+        }
+        else
+        {
+            print("Enemy hit by non-ProjectileHero: " + otherGO.name);      // f
+        }
+    }
+
+    void OnTriggerStay(Collider coll)
+    {
+        GameObject otherGO = coll.gameObject;
+
+        // Check for collisions with ProjectileHero
+        ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
+        if (p != null)
+        {
+            HandleProjectileHit(otherGO, p.DamageStay());
         }
         else
         {
