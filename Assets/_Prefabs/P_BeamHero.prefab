@@ -116,7 +116,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 10, z: 0}
-  m_LocalScale: {x: 0.25, y: 40, z: 0.5}
+  m_LocalScale: {x: 0.5, y: 5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2173670827949179639}
@@ -203,4 +203,5 @@ MonoBehaviour:
   rigid: {fileID: 0}
   _type: 0
   lifespan: 1
+  growSpeed: 300
   localPos: {x: 0, y: 0, z: 0}

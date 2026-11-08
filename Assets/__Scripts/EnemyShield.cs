@@ -1,0 +1,120 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+[DisallowMultipleComponent]
+[RequireComponent(typeof(BlinkColorOnHit))]
+public class EnemyShield : MonoBehaviour
+{
+    [Header("Inscribed")]
+    public float health = 10;
+    [SerializeField]
+    private List<EnemyShield> protectors = new List<EnemyShield>();
+    private BlinkColorOnHit blinker;
+
+    public bool IsActive
+    {
+        get { return gameObject.activeInHierarchy; }
+        private set { gameObject.SetActive(value); }
+    }
+
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        blinker = GetComponent<BlinkColorOnHit>();
+        blinker.ignoreOnCollisionEnter = true;
+
+        if (transform.parent == null) return;
+
+        EnemyShield shieldParent = transform.parent.GetComponentInParent<EnemyShield>();
+        if (shieldParent != null)
+        {
+            shieldParent.AddProtector(this);
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    public void AddProtector(EnemyShield shield)
+    {
+        protectors.Add(shield);
+    }
+
+    public float TakeDamage(float dmg)
+    {
+        foreach (EnemyShield es in protectors)
+        {
+            if (es.IsActive)
+            {
+                dmg = es.TakeDamage(dmg);
+                if (dmg <= 0) return 0;
+            }
+        }
+
+        blinker.SetColors();
+        health -= dmg;
+
+        if (health <= 0)
+        {
+            IsActive = false;
+            return -health;
+        }
+
+        return 0;
+    }
+
+    private bool HasActiveProtector()
+    {
+        foreach (EnemyShield es in protectors)
+        {
+            if (es.IsActive) return true;
+        }
+        return false;
+    }
+
+    void OnTriggerEnter(Collider coll)
+    {
+        GameObject otherGO = coll.gameObject;
+
+        ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
+        if (p != null)
+        {
+            bool activeProtector = HasActiveProtector();
+
+            if (!activeProtector)
+            {
+                float hit = p.DamageHit(gameObject);
+                TakeDamage(hit);
+            }
+        }
+        else
+        {
+            Debug.Log("EnemyShield hit by non-ProjectileHero: " + otherGO.name);
+        }
+    }
+
+    void OnTriggerStay(Collider coll)
+    {
+        GameObject otherGO = coll.gameObject;
+
+        ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
+        if (p != null)
+        {
+            bool activeProtector = HasActiveProtector();
+
+            if (!activeProtector)
+            {
+                float hit = p.DamageStay(gameObject);
+                TakeDamage(hit);
+            }
+        }
+        else
+        {
+            Debug.Log("EnemyShield hit by non-ProjectileHero: " + otherGO.name);
+        }
+    }
+}

@@ -42,7 +42,7 @@ public class ProjectileHero : MonoBehaviour
     public virtual void Move()
     { }
 
-    public virtual float DamageHit()
+    public virtual float DamageHit(GameObject enemy)
     {
         WeaponDefinition def = Main.GET_WEAPON_DEFINITION(_type);
         float damage = def.damageOnHit;
@@ -53,7 +53,7 @@ public class ProjectileHero : MonoBehaviour
         return damage;
     }
 
-    public virtual float DamageStay()
+    public virtual float DamageStay(GameObject enemy)
     {
         float damage = Main.GET_WEAPON_DEFINITION(type).damagePerSec;
         float damageTick = damage * Time.fixedDeltaTime;

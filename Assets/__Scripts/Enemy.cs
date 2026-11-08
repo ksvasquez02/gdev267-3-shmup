@@ -19,7 +19,9 @@ public class Enemy : MonoBehaviour
     protected BoundsCheck bndCheck;
     protected bool calledShipDestroyed = false;
 
-    void Awake()
+    public virtual float Health { get { return health; } }
+
+    protected virtual void Awake()
     {                                                            // c
         bndCheck = GetComponent<BoundsCheck>();
     }
@@ -95,7 +97,7 @@ public class Enemy : MonoBehaviour
         ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
         if (p != null)
         {
-            HandleProjectileHit(otherGO, p.DamageHit());
+            HandleProjectileHit(otherGO, p.DamageHit(gameObject));
         }
         else
         {
@@ -111,7 +113,7 @@ public class Enemy : MonoBehaviour
         ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
         if (p != null)
         {
-            HandleProjectileHit(otherGO, p.DamageStay());
+            HandleProjectileHit(otherGO, p.DamageStay(gameObject));
         }
         else
         {

@@ -128,13 +128,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: HPIndicator
       objectReference: {fileID: 0}
+    - target: {fileID: 2707582531703441250, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2707582531703441250, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2861897523396263725, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2861897523396263725, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.6666666
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2861897523396263725, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
       propertyPath: m_LocalPosition.z

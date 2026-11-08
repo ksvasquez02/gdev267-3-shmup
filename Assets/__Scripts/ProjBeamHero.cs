@@ -5,6 +5,8 @@ public class ProjBeamHero : ProjectileHero
     [Header("Beam: Inscribed")]
     [SerializeField]
     private float lifespan = 1;
+    [SerializeField]
+    private float growSpeed = 20;
 
     [Header("Beam: Dynamic")]
     [SerializeField]
@@ -35,13 +37,26 @@ public class ProjBeamHero : ProjectileHero
         pos.z = localPos.z;
         transform.position = pos;
 
+        float height = transform.localScale.y + growSpeed * Time.fixedDeltaTime;
+        SetHeight(height);
+    }
+
+    private void SetHeight(float height)
+    {
         Vector3 scale = transform.localScale;
-        scale.y = GetViewHeight();
+        scale.y = Mathf.Min(height, GetViewHeight());
         transform.localScale = scale;
     }
 
     private float GetViewHeight()
     {
         return Camera.main.orthographicSize * 2;
+    }
+
+    public override float DamageStay(GameObject enemy)
+    {
+        float dist = enemy.transform.position.y - transform.position.y;
+        SetHeight(dist);
+        return base.DamageStay(enemy);
     }
 }
