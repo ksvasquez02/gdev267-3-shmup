@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 public class ProjMissileHero : ProjectileHero
 {
-    [Header("Inscribed")]
+    [Header("Missile Inscribed")]
     public float lockOnRadius = 1f;
     public Vector2 lockOnOffset = Vector3.zero;
     public float baseTurnSpeed = 0;
@@ -13,7 +13,7 @@ public class ProjMissileHero : ProjectileHero
     public float maxTurnDeg = 360;
     public LayerMask lockonLayerMask;
 
-    [Header("Dynamic")]
+    [Header("Missile Dynamic")]
     public GameObject target;
     private int prevTargets = 0;
     [SerializeField]
@@ -21,7 +21,7 @@ public class ProjMissileHero : ProjectileHero
     [SerializeField]
     private float remainingTurnDeg = 0;
 
-    void Start()
+    protected override void Init()
     {
         turnSpeed = baseTurnSpeed;
         remainingTurnDeg = maxTurnDeg;

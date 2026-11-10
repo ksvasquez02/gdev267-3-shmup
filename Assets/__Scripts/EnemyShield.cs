@@ -3,7 +3,7 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(BlinkColorOnHit))]
-public class EnemyShield : MonoBehaviour
+public class EnemyShield : Hitable
 {
     [Header("Inscribed")]
     public float health = 10;
@@ -31,12 +31,6 @@ public class EnemyShield : MonoBehaviour
         {
             shieldParent.AddProtector(this);
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void AddProtector(EnemyShield shield)
@@ -67,7 +61,7 @@ public class EnemyShield : MonoBehaviour
         return 0;
     }
 
-    private bool HasActiveProtector()
+    public bool HasActiveProtector()
     {
         foreach (EnemyShield es in protectors)
         {
@@ -78,16 +72,19 @@ public class EnemyShield : MonoBehaviour
 
     void OnTriggerEnter(Collider coll)
     {
-        GameObject otherGO = coll.gameObject;
+        GameObject otherGO = GetColliderGameObject(coll);
+        Vector2 point = coll.ClosestPoint(transform.position);
 
         ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
         if (p != null)
         {
+            //if (protectors.Count <= 0) return;
+
             bool activeProtector = HasActiveProtector();
 
             if (!activeProtector)
             {
-                float hit = p.DamageHit(gameObject);
+                float hit = p.DamageHit(point);
                 TakeDamage(hit);
             }
         }
@@ -99,16 +96,23 @@ public class EnemyShield : MonoBehaviour
 
     void OnTriggerStay(Collider coll)
     {
-        GameObject otherGO = coll.gameObject;
+        GameObject otherGO = GetColliderGameObject(coll);
+        Vector2 point = coll.ClosestPoint(transform.position);
 
-        ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
-        if (p != null)
+        if (otherGO.TryGetComponent(out ProjectileHero p))
         {
+            //if (protectors.Count <= 0) return;
+
             bool activeProtector = HasActiveProtector();
 
-            if (!activeProtector)
+            if (!activeProtector )
             {
-                float hit = p.DamageStay(gameObject);
+                float hit = p.DamageStay(point);
+                TakeDamage(hit);
+            }
+            else
+            {
+                float hit = p.DamageHit(point);
                 TakeDamage(hit);
             }
         }

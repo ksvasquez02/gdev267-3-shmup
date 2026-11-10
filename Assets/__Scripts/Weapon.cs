@@ -65,6 +65,7 @@ public class WeaponDefinition
 public class Weapon : MonoBehaviour
 {
     static public Transform PROJECTILE_ANCHOR;
+    static public Transform FX_ANCHOR;
 
     [Header("Inscribed")]
     [SerializeField]
@@ -101,7 +102,16 @@ public class Weapon : MonoBehaviour
 
         // Find the fireEvent of a Hero Component in the parent hierarchy
         Hero hero = GetComponentInParent<Hero>();                              // e
-        if (hero != null) hero.fireEvent += Fire;
+        if (hero != null)
+        {
+            hero.fireEvent += Fire;
+            if (FX_ANCHOR == null)
+            {
+                GameObject anchor = new("_EffectsAnchor");
+                anchor.transform.SetParent(hero.transform, false);
+                FX_ANCHOR = anchor.transform;
+            }
+        }
     }
 
     public eWeaponType type
@@ -164,7 +174,7 @@ public class Weapon : MonoBehaviour
         // If it hasn’t been enough time between shots, return
         if (Time.time < nextShotTime) return;                              // j
 
-        ProjectileHero p;
+        ProjectileHero p = null;
         Vector3 vel = Vector3.up * def.velocity;
 
         float projCount = def.projectileCount + (isMainWeapon ? def.mainWeaponBonus : 0);
@@ -214,6 +224,13 @@ public class Weapon : MonoBehaviour
                     break;
             }
             spreadOffset += spreadIncrement;
+        }
+
+        if (p != null)
+        {
+            Vector3 fxPos = new(shotPointTrans.position.x, shotPointTrans.position.y, 0);
+            p.fx.inheritedColor = def.projectileColor;
+            p.fx.GenerateFireEffect(fxPos, FX_ANCHOR);
         }
     }
 

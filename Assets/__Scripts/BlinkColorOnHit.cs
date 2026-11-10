@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]                                                     // a
-public class BlinkColorOnHit : MonoBehaviour
+public class BlinkColorOnHit : Hitable
 {
     private static float blinkDuration = 0.1f; // # seconds to show damage      // b
     private static Color blinkColor = Color.red;
@@ -39,10 +39,10 @@ public class BlinkColorOnHit : MonoBehaviour
     void OnTriggerEnter(Collider coll)
     {
         if (ignoreOnCollisionEnter) return;
+        GameObject otherGO = GetColliderGameObject(coll);
 
         // Check for collisions with ProjectileHero
-        ProjectileHero p = coll.gameObject.GetComponent<ProjectileHero>();
-        if (p != null)
+        if (otherGO.TryGetComponent(out ProjectileHero p))
         {                                                  // f
             if (bndCheck != null && !bndCheck.isOnScreen)
             {               // g
@@ -54,10 +54,10 @@ public class BlinkColorOnHit : MonoBehaviour
     void OnTriggerStay(Collider coll)
     {
         if (ignoreOnCollisionEnter) return;
+        GameObject otherGO = GetColliderGameObject(coll);
 
         // Check for collisions with ProjectileHero
-        ProjectileHero p = coll.gameObject.GetComponent<ProjectileHero>();
-        if (p != null)
+        if (otherGO.TryGetComponent(out ProjectileHero p))
         {                                                  // f
             if (bndCheck != null && !bndCheck.isOnScreen)
             {               // g

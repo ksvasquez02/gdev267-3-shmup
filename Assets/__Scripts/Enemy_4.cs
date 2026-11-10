@@ -76,13 +76,22 @@ public class Enemy_4 : Enemy
 
     void OnTriggerEnter(Collider coll)
     {
-        GameObject otherGO = coll.gameObject;
+        GameObject otherGO = GetColliderGameObject(coll);
+        Vector2 point = coll.ClosestPoint(transform.position);
 
-        ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
-        if (p != null)
+        if (otherGO.TryGetComponent(out ProjectileHero p))
         {
+            float hit = 0;
+            if (!mainShield.HasActiveProtector())
+            {
+                hit = p.DamageHit(point);
+                mainShield.TakeDamage(hit);
+            }
+
             if (mainShield.IsActive) return;
-            HandleProjectileHit(otherGO, p.DamageHit(gameObject));
+
+            Debug.Log("Main Hit");
+            HandleProjectileHit(otherGO, hit);
         }
         else
         {
@@ -92,13 +101,13 @@ public class Enemy_4 : Enemy
 
     void OnTriggerStay(Collider coll)
     {
-        GameObject otherGO = coll.gameObject;
+        GameObject otherGO = GetColliderGameObject(coll);
+        Vector2 point = coll.ClosestPoint(transform.position);
 
-        ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
-        if (p != null)
+        if (otherGO.TryGetComponent(out ProjectileHero p))
         {
             if (mainShield.IsActive) return;
-            HandleProjectileHit(otherGO, p.DamageStay(gameObject));
+            HandleProjectileHit(otherGO, p.DamageStay(point));
         }
         else
         {

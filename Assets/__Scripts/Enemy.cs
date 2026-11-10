@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoundsCheck))]
-public class Enemy : MonoBehaviour
+public class Enemy : Hitable
 {
 
 
@@ -91,13 +91,13 @@ public class Enemy : MonoBehaviour
 
     void OnTriggerEnter(Collider coll)
     {
-        GameObject otherGO = coll.gameObject;
+        GameObject otherGO = GetColliderGameObject(coll);
+        Vector2 point = coll.ClosestPoint(transform.position);
 
         // Check for collisions with ProjectileHero
-        ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
-        if (p != null)
+        if (otherGO.TryGetComponent(out ProjectileHero p))
         {
-            HandleProjectileHit(otherGO, p.DamageHit(gameObject));
+            HandleProjectileHit(otherGO, p.DamageHit(point));
         }
         else
         {
@@ -107,13 +107,13 @@ public class Enemy : MonoBehaviour
 
     void OnTriggerStay(Collider coll)
     {
-        GameObject otherGO = coll.gameObject;
+        GameObject otherGO = GetColliderGameObject(coll);
+        Vector2 point = coll.ClosestPoint(transform.position);
 
         // Check for collisions with ProjectileHero
-        ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
-        if (p != null)
+        if (otherGO.TryGetComponent(out ProjectileHero p))
         {
-            HandleProjectileHit(otherGO, p.DamageStay(gameObject));
+            HandleProjectileHit(otherGO, p.DamageStay(point));
         }
         else
         {

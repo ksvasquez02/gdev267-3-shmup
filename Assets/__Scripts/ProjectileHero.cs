@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,12 +8,16 @@ public class ProjectileHero : MonoBehaviour
 {
     private BoundsCheck bndCheck;
     protected Renderer rend;
+    public EffectsProjectile fx;
 
     [Header("Dynamic")]
     public Rigidbody rigid;
     [SerializeField]                                                         // a
     private eWeaponType _type;
 
+    public delegate void ProjectileFXDelegate(Vector3 pos);
+    public event ProjectileFXDelegate FireEvent;
+    public event ProjectileFXDelegate HitEvent;
 
     // This public property masks the private field _type
     public eWeaponType type
@@ -27,36 +32,65 @@ public class ProjectileHero : MonoBehaviour
         bndCheck = GetComponent<BoundsCheck>();
         rend = GetComponentInChildren<Renderer>();                                     // d
         rigid = GetComponentInChildren<Rigidbody>();
+
+        TryGetComponent(out fx);
     }
+
+    protected virtual void Start()
+    {
+        Init();
+        //FireEvent?.Invoke(transform.position);
+    }
+
+    protected virtual void Init()
+    { }
 
     void FixedUpdate()
     {
         Move();
 
-        if (bndCheck.LocIs(BoundsCheck.eScreenLocs.offUp))
+        if (!bndCheck.isOnScreen)
         {
-            Destroy(gameObject);
+            DestroyProjectile();
         }
     }
 
     public virtual void Move()
     { }
 
-    public virtual float DamageHit(GameObject enemy)
+    public virtual void DestroyProjectile()
+    {
+        Destroy(gameObject);
+    }
+
+    public virtual float DamageHit(Vector3 point)
     {
         WeaponDefinition def = Main.GET_WEAPON_DEFINITION(_type);
         float damage = def.damageOnHit;
+
+        if (damage > 0) 
+        {
+            HitEvent?.Invoke(point);
+        }
+
         if (def.damagePerSec <= 0)
         {
-            Destroy(gameObject);
+            DestroyProjectile();
         }
+
         return damage;
     }
 
-    public virtual float DamageStay(GameObject enemy)
+    public virtual float DamageStay(Vector3 point)
     {
         float damage = Main.GET_WEAPON_DEFINITION(type).damagePerSec;
         float damageTick = damage * Time.fixedDeltaTime;
+
+        if (damage > 0)
+        {
+            HitEvent?.Invoke(point);
+        }
+
         return damageTick;
     }
 

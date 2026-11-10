@@ -15,7 +15,7 @@ public class ProjPhaserHero : ProjectileHero
     private float x0;
     private float birthTime;
 
-    void Start()
+    protected override void Init()
     {
         x0 = transform.position.x;
         birthTime = Time.time;

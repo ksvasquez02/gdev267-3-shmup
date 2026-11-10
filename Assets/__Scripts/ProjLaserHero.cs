@@ -8,19 +8,23 @@ public class ProjLaserHero : ProjectileHero
     public float growAccel = 100;
 
     [Header("Laser: Dynamic")]
+    private Transform resizing;
     private float growSpeed = 0;
 
-    void Start()
+    protected override void Init()
     {
         growSpeed = growAccel >= 0 ? minMaxGrowSpeed.x : minMaxGrowSpeed.y;
-        Vector3 scale = transform.localScale;
+
+        resizing = rend.transform.parent;
+
+        Vector3 scale = resizing.localScale;
         scale.y = minMaxSize.x;
-        transform.localScale = scale;
+        resizing.localScale = scale;
     }
 
     public override void Move()
     {
-        Vector3 scale = transform.localScale;
+        Vector3 scale = resizing.localScale;
 
         if (scale.y < minMaxSize.y)
         {
@@ -30,7 +34,7 @@ public class ProjLaserHero : ProjectileHero
             scale.y += growSpeed * Time.fixedDeltaTime;
             scale.y = Mathf.Min(scale.y, minMaxSize.y);
 
-            transform.localScale = scale;
+            resizing.localScale = scale;
         }
     }
 }
