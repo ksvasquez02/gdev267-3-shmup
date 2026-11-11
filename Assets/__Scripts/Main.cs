@@ -121,8 +121,8 @@ public class Main : MonoBehaviour
         if (Random.value <= e.powerUpDropChance)
         { // Underlined red for now  // c
           // Choose a PowerUp from the possibilities in powerUpFrequency
-            int ndx = Random.Range(0, S.powerUpFrequency.Length);           // d
-            eWeaponType pUpType = S.powerUpFrequency[ndx];
+            int ndx = Random.Range(-1, S.powerUpFrequency.Length);           // d
+            eWeaponType pUpType = ndx >= 0 ? S.powerUpFrequency[ndx] : Hero.S.MainWeapon.type;
 
             // Spawn a PowerUp
             GameObject go = Instantiate<GameObject>(S.prefabPowerUp);

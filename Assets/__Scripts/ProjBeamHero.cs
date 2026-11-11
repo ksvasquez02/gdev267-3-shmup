@@ -62,7 +62,7 @@ public class ProjBeamHero : ProjectileHero
 
     public override float DamageStay(Vector3 point)
     {
-        float dist = point.y - transform.position.y - 2f;
+        float dist = point.y - resizing.position.y - 2.5f;
         SetHeight(dist);
         return base.DamageStay(point);
     }

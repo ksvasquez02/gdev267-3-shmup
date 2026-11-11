@@ -16,7 +16,7 @@ public class ProjectileHero : MonoBehaviour
     private eWeaponType _type;
 
     public delegate void ProjectileFXDelegate(Vector3 pos);
-    public event ProjectileFXDelegate FireEvent;
+    //public event ProjectileFXDelegate FireEvent;
     public event ProjectileFXDelegate HitEvent;
 
     // This public property masks the private field _type

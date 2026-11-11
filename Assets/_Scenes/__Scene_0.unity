@@ -1223,7 +1223,7 @@ MonoBehaviour:
   - {fileID: 2103876059}
   - {fileID: 980067140}
   - {fileID: 781726980}
-  startingWeapon: 6
+  startingWeapon: 1
   _shieldLevel: 1
 --- !u!114 &930863984
 MonoBehaviour:
@@ -1460,7 +1460,7 @@ MonoBehaviour:
   - type: 6
     letter: E
     powerUpColor: {r: 0.6, g: 0.1960784, b: 0.8000001, a: 1}
-    weaponModelPrefab: {fileID: 919132149155446097, guid: 0522e2d6add5631469273543744ebf7f, type: 3}
+    weaponModelPrefab: {fileID: 919132149155446097, guid: 2b917555367b8f64fab39ba6974870f3, type: 3}
     projectilePrefab: {fileID: 8884485313326729009, guid: e5dba636bfc5bca44b6725b0855de7bb, type: 3}
     projectileColor: {r: 0.6, g: 0.1960784, b: 0.8000001, a: 1}
     damageOnHit: 0
@@ -1468,7 +1468,7 @@ MonoBehaviour:
     delayBetweenShots: 1.25
     velocity: 0
     projectileCount: 1
-    projectileSpread: 0.75
+    projectileSpread: 0.5
     fireOrderDelay: 0.05
     mainWeaponBonus: 1
   powerUpFrequency: 01000000020000000300000004000000050000000600000007000000

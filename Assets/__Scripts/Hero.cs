@@ -47,8 +47,7 @@ public class Hero : MonoBehaviour
         //fireEvent += TempFire;
 
         // Reset the weapons to start _Hero with 1 blaster
-        ClearWeapons();
-        MainWeapon.SetType(startingWeapon);
+        SetupMainWeapon(startingWeapon);
         MainWeapon.isMainWeapon = true;
     }
 
@@ -212,14 +211,19 @@ public class Hero : MonoBehaviour
                 }
                 else
                 { // If this is a different weapon type                   // d
-                    ClearWeapons();
-                    MainWeapon.SetType(pUp.type);
-                    MainWeapon.nextShotTime = 0;
+                    SetupMainWeapon(pUp.type);
                 }
                 break;
 
         }
         pUp.AbsorbedBy(this.gameObject);
+    }
+
+    private void SetupMainWeapon(eWeaponType type)
+    {
+        ClearWeapons();
+        MainWeapon.SetType(type);
+        MainWeapon.nextShotTime = 0;
     }
 
 }

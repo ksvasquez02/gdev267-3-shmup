@@ -122,6 +122,7 @@ MonoBehaviour:
   health: 1
   score: 100
   powerUpDropChance: 1
+  duration: 4
 --- !u!114 &2047004858428391930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,7 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3df9081eef648fa41bae0e869651b653, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 20
   protectors: []
 --- !u!114 &-5834237933516866095
 MonoBehaviour:
@@ -163,6 +164,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HPIndicator
       objectReference: {fileID: 0}
+    - target: {fileID: 2172658425740910650, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
+      propertyPath: m_fontSize
+      value: 32
+      objectReference: {fileID: 0}
     - target: {fileID: 2707582531703441250, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -177,7 +182,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2861897523396263725, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 2861897523396263725, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -213,7 +218,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3397027773462161353, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 10
+      value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 3397027773462161353, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

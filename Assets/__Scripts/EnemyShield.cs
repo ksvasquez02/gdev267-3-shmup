@@ -114,6 +114,7 @@ public class EnemyShield : Hitable
             {
                 float hit = p.DamageHit(point);
                 TakeDamage(hit);
+                Debug.Log($"{gameObject.name}: Stay turned to Hit");
             }
         }
         else
