@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class HealthIndicator : MonoBehaviour
 {
+    [Header("Inscribed")]
+    public bool displayText = false;
+
     [Header("Dynamic")]
     [SerializeField]
     private Slider hpSlider;
@@ -43,6 +46,8 @@ public class HealthIndicator : MonoBehaviour
 
         if (!hpSlider.isActiveAndEnabled && HealthValue < 1)
             hpSlider.gameObject.SetActive(true);
+
+        hpText.gameObject.SetActive(displayText);
 
         hpSlider.value = HealthValue;
         hpText.text = Mathf.Ceil(enemy.Health).ToString();

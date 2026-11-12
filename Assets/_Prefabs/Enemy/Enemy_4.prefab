@@ -166,7 +166,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2172658425740910650, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
       propertyPath: m_fontSize
-      value: 32
+      value: 26.85
       objectReference: {fileID: 0}
     - target: {fileID: 2707582531703441250, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
       propertyPath: m_AnchorMax.x
@@ -218,11 +218,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3397027773462161353, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 120
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3397027773462161353, guid: d1cc472f1c36f89499a803a49d532ce5, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 20
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
